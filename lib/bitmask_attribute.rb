@@ -85,6 +85,27 @@ module BitmaskAttribute
           def #{attribute}_for_#{value}?                  
             self.#{attribute}?(:#{value})
           end
+
+          # HACK: add getter method
+          # works just like the predicate, makes it easy to use actionview form helpers
+          def #{attribute}_for_#{value}
+            self.#{attribute}?(:#{value})
+          end
+          
+          # HACK: add setter method for each value
+          #  just give it a boolean value (also takes string "0" and "1", or fixnum 0 and 1)
+          def #{attribute}_for_#{value}=(to_set)
+            to_set = to_set.to_i if to_set.is_a? String
+            to_set = (to_set == 1) if to_set.is_a? Fixnum
+            if to_set
+              self.#{attribute} << :#{value}
+            else
+              self.#{attribute}.delete :#{value}
+            end
+            # return the final setted value
+            self.#{attribute}_for_#{value}?
+          end
+
         )
       end
       model.class_eval %(
