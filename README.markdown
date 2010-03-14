@@ -13,6 +13,22 @@ values.
       bitmask :roles, :as => [:writer, :publisher, :editor, :proofreader] 
     end
     
+this will define some instance methods: 
+
+    User.first.methods.grep /roles/
+
+    "roles?",
+     "roles",
+     "with_transaction_returning_roles",
+     "roles=",
+     "roles_for_writer?",
+     "roles_for_writer",
+     "roles_for_writer=",
+     "roles_for_publisher?",
+     "roles_for_publisher",
+     "roles_for_publisher="
+    ...
+
 You can then modify the column using the declared values without resorting
 to manual bitmasks.
     
@@ -39,6 +55,18 @@ Or, just check if any values are present:
 
     user.roles?
     # => true
+    
+View tips:
+------------
+
+      <div>
+        <%= f.label :roles %>
+        <ul>
+          <% User.bitmasks[:roles].keys.each do |roles| %>
+            <li><%= f.check_box "roles_for_#{roles}" %><%= f.label "roles_for_#{roles}" %></li>
+          <% end  %>
+        </ul>
+      </div>
 
 Named Scopes
 ------------
